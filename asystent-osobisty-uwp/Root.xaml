@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <SplitView x:Name="slvRootPanes" OpenPaneLength="200"
+    <SplitView x:Name="slvRootPanes" OpenPaneLength="300"
                CompactPaneLength="50" IsPaneOpen="False"
                DisplayMode="CompactOverlay">
         <SplitView.Pane>
@@ -18,7 +18,7 @@
                 </Grid.RowDefinitions>
                 <ListView x:Name="listHamburger"
                           Background="{ThemeResource SystemControlBackgroundAccentBrush}"
-                          Width="200" Grid.Row="0">
+                          Width="300" Grid.Row="0">
                     <ListViewItem x:Name="itemHM" Padding="0" Height="50"
                                   Tapped="ToggleHamburgerMenu">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -33,37 +33,37 @@
                         </StackPanel>
                     </ListViewItem>
                 </ListView>
-                <ListView x:Name="listMenu"
-                          Width="200" Grid.Row="1"
-                          Background="White">
-                    <ListViewItem Padding="0" Height="50" Tapped="listMenuHome_Tapped">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock TextAlignment="Center" VerticalAlignment="Center"
+                <StackPanel Orientation="Vertical" Grid.Row="1">
+                    <ListView Width="300" Name="listHome" Background="White">
+                        <ListViewItem Padding="0" Height="50" Tapped="listMenuHome_Tapped">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center"
                                        Width="50" FontSize="18"
                                        FontFamily="Segoe MDL2 Assets">
                                 &#xe10f;
-                            </TextBlock>
-                            <TextBlock Padding="5" VerticalAlignment="Center">
+                                </TextBlock>
+                                <TextBlock Padding="5" VerticalAlignment="Center">
                                 Strona główna
-                            </TextBlock>
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem Padding="0" Height="50" Tapped="listMenuTimetable_Tapped">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock TextAlignment="Center" VerticalAlignment="Center"
-                                       Width="50" FontSize="18"
-                                       FontFamily="Segoe MDL2 Assets">
-                                &#xe806;
-                            </TextBlock>
-                            <TextBlock Padding="5" VerticalAlignment="Center">
-                                Rozkład jazdy
-                            </TextBlock>
-                        </StackPanel>
-                    </ListViewItem>
-                </ListView>
-
+                                </TextBlock>
+                            </StackPanel>
+                        </ListViewItem>
+                    </ListView>
+                    <ListView x:Name="listSites"
+                          Width="300"
+                          Background="White" >
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel>
+                                    <VirtualizingStackPanel.ChildrenTransitions>
+                                        <TransitionCollection/>
+                                    </VirtualizingStackPanel.ChildrenTransitions>
+                                </VirtualizingStackPanel>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                    </ListView>
+                </StackPanel>
                 <ListView x:Name="listSettings"
-                    Width="200" Grid.Row="2"
+                    Width="300" Grid.Row="2"
                           Background="White">
                     <ListViewItem Padding="0" Height="50" Tapped="listSettings_Tapped">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -90,7 +90,7 @@
                     <TextBlock x:Name="tbxTitlebarPageName"
                     FontWeight="Bold" Foreground="White" FontSize="16"
                     Grid.Row="0" Padding="15,0,0,0" VerticalAlignment="Center">
-                    STRONA GŁÓWNA
+                    [pageTitle]
                     </TextBlock>
                 </Border>
             </Grid>
