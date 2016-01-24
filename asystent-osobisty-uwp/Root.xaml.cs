@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -77,58 +78,68 @@ namespace App1
             this.grdContent.Children.Add(this.frmRootFrame);
             Grid.SetRow(this.frmRootFrame, 1);
             this.RootNavigate<Home>();
+
+            /* tworzy tabele stron, jezeli nie ma */
+            DbConnection.CreateTable<Sites>();
+            /* podpina strony pod menu */
             this.RefreshPagesList();
         }
 
-        /* HAMBURGER */
         private void ToggleHamburgerMenu(object sender, TappedRoutedEventArgs e)
         {
             slvRootPanes.IsPaneOpen = !slvRootPanes.IsPaneOpen;
         }
 
-        private void RefreshPagesList()
+        private async void RefreshPagesList()
         {
-            listSites.Items.Clear();
-            List<Sites> sites = (from p in DbConnection.Table<Sites>()
-                                 select p).ToList();
-            foreach (Sites s in sites)
+            try {
+                listSites.Items.Clear();
+                List<Sites> sites = (from p in DbConnection.Table<Sites>()
+                                     select p).ToList();
+                foreach (Sites s in sites)
+                {
+                    ListViewItem item = new ListViewItem
+                    {
+                        Padding = new Thickness(0),
+                        Name = "site_" + s.Id,
+                    };
+                    item.Tapped += listSites_Tapped;
+
+                    StackPanel stack = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        VerticalAlignment = VerticalAlignment.Center,
+
+                    };
+
+                    TextBlock ticon = new TextBlock
+                    {
+                        TextAlignment = TextAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Width = 50,
+                        FontSize = 18,
+                        FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                        Text = "\U0000E718",
+                    };
+
+                    TextBlock tname = new TextBlock
+                    {
+                        Padding = new Thickness(5),
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Text = s.Name,
+                    };
+
+                    stack.Children.Add(ticon);
+                    stack.Children.Add(tname);
+                    item.Content = stack;
+
+                    listSites.Items.Add(item);
+                }
+            }
+            catch (SQLiteException e)
             {
-                ListViewItem item = new ListViewItem
-                {
-                    Padding = new Thickness(0),
-                    Name = "site_" + s.Id,
-                };
-                item.Tapped += listSites_Tapped;
-
-                StackPanel stack = new StackPanel
-                {
-                    Orientation = Orientation.Horizontal,
-                    VerticalAlignment = VerticalAlignment.Center,
-
-                };
-
-                TextBlock ticon = new TextBlock
-                {
-                    TextAlignment = TextAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Width = 50,
-                    FontSize = 18,
-                    FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                    Text = "\U0000E718",
-                };
-
-                TextBlock tname = new TextBlock
-                {
-                    Padding = new Thickness(5),
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Text = s.Name,
-                };
-
-                stack.Children.Add(ticon);
-                stack.Children.Add(tname);
-                item.Content = stack;
-
-                listSites.Items.Add(item);
+                var dialog = new MessageDialog("Nie pobrano listy stron. Sprawdź ustawienia.");
+                await dialog.ShowAsync();
             }
         }
 
